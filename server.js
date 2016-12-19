@@ -10,7 +10,7 @@ var bots = require('./bots.js');
 const PORT = 8080;
 
 // Id del bot en curso
-var currentBotId;
+var botIds=[];
 
 // -------------------------------------------------------
 // Routing
@@ -21,13 +21,14 @@ app.get('/', function(req, res) {
 });
 
 app.get('/bot/tweet/start', function(req, res) {
-	currentBotId = bots.startTweetbot();
+	botIds = bots.startTweetbot();
+
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
 app.get('/bot/stop', function(req, res) {
-	bots.stopBot(currentBotId);
-	currentBotId = null;
+	bots.stopBots(botIds);
+	botIds = [];
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
