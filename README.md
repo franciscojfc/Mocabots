@@ -10,6 +10,8 @@ Instala Express: npm install express
 
 Instala twitter: npm install twitter
 
+Instala redwrap: npm install redwrap
+
 Entra en el directorio raíz del proyecto y ejecuta: nodemon server.js
 
 Para arrancar bot twitero /bot/tweet/start
