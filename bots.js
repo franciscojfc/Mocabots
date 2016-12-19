@@ -18,11 +18,35 @@ var Twitter = new Twitter({
 ////////////////////////////////////////////////////////////////////////////////
 
 // Se obtienen los mensajes a twitear de un fichero de texto
+var getTwitsFromFile = function(callback) {
+    // Coger los mensajes de un fichero
+    // var nl = require('os').EOL;
+    // var text = fs.readFileSync('/Mocabots/Mocabots/twits.txt', 'utf8');
+    // var array = text.split(nl);
+    // callback(array);
+};
+
+// Se obtienen los mensajes a twitear de una pagina de reddit
+var getTwitsFromReddit = function(callback) {
+    reddit = require('redwrap');
+    var messages = [];
+    reddit.r('ShortCleanFunny').sort('new').from('year').all(function(res) {
+        res.on('data', function(data, res) {
+            for (var i = 0; i < data.data.children.length; i++) {
+              messages.push(data.data.children[i].data.title);
+            }
+            console.log('Datos cogidos de reddit (%d)', data.data.children.length);
+            callback(messages);
+        });
+        res.on('error', function(e) {
+            console.log('Error when accessing Reddit: %s', e); //outputs any errors
+        });
+    });
+};
+
+// Se obtienen los tweets a twitear
 var getTwits = function(callback) {
-    var nl = require('os').EOL;
-    var text = fs.readFileSync('/Mocabots/Mocabots/twits.txt', 'utf8');
-    var array = text.split(nl);
-    callback(array);
+  getTwitsFromReddit(callback);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +66,6 @@ var postTweet = function(message) {
 
 // Obtiene las tendencias de la zona que se especifique en id
 var getTrends = function(callback) {
-    var MAX_TRENDS = 10;
     var trendsAvaliable = [];
     var params = {
         id: 23424977 //24865675 Europa
@@ -50,11 +73,7 @@ var getTrends = function(callback) {
     Twitter.get('trends/place', params, function(err, data) {
         if (!err) {
             var trends = data[0].trends;
-            var num_trends = trends.length;
-            if (trends.length > MAX_TRENDS) {
-                num_trends = MAX_TRENDS;
-            }
-            for (var i = 0; i < num_trends; i++) {
+            for (var i = 0; i < trends.length; i++) {
                 trendsAvaliable.push(trends[i].name);
             }
             callback(trendsAvaliable);
@@ -86,8 +105,7 @@ var retweet = function(trend) {
                     console.log('Error when RETWEETING', err);
                 }
             });
-        }
-        else {
+        } else {
             console.log('Error when SEARCHING...', err);
         }
     });
@@ -96,14 +114,14 @@ var retweet = function(trend) {
 // Obtiene las tendencias de Twitter y genera mensajes conteniendo algunas
 var generateTwits = function(callback) {
     var twitts = [];
-    var twit_message = getTwits(function(twit_message) {
+    getTwits(function(twit_message) {
         getTrends(function(trends) {
 
             for (var i = 0; i < trends.length; i++) {
                 var rand_init = Math.floor(Math.random() * twit_message.length);
                 var rand_trend = Math.floor(Math.random() * trends.length);
                 // Generamos mensajes
-                var message = 'a: ' + twit_message[rand_init] + ' ' + trends[rand_trend];
+                var message = twit_message[rand_init] + ' ' + trends[rand_trend];
                 if (message.length > 140) {
                     message = message.substring(0, 139);
                 }
@@ -122,11 +140,11 @@ var generateTwits = function(callback) {
 var startTweetbot = function() {
 
     generateTwits(function(twitts, trends) {
-        console.log("trends:", trends);
-        console.log("twitts:", twitts);
+        console.log("trends(%d): %s...", trends.length, trends[0]);
+        console.log("twitts(%d): %s...", twitts.length, twitts[0]);
 
         var postBotId = setInterval(function() {
-            console.log("postBot----");
+            console.log("INIT postBot");
             if (twitts.length > 0) {
                 var rand_init = Math.floor(Math.random() * twitts.length);
                 postTweet(twitts[rand_init]);
@@ -135,7 +153,7 @@ var startTweetbot = function() {
         }, requestIntervalTime * 2);
 
         var retweetBotId = setInterval(function() {
-            console.log("retweetBot----");
+            console.log("INIT retweetBot");
             if (trends.length > 0) {
                 var rand_trends_init = Math.floor(Math.random() * trends.length);
                 retweet(trends[rand_trends_init]);
@@ -144,7 +162,7 @@ var startTweetbot = function() {
         }, requestIntervalTime * 5);
 
         var trendsBotId = setInterval(function() {
-            console.log("generateBot INSIDE----");
+            console.log("INIT generateBot");
             generateTwits(function(tw, tr) {
                 twitts = tw;
                 trends = tr;
