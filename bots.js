@@ -4,8 +4,9 @@ var fs = require("fs");
 
 // NO TOCAR. Puedes bloquear la cuenta. Max: 1 petición por minuto
 var REQ_INT_TIME = 60000; // Request interval time
-var POST_INT_TIME = REQ_INT_TIME * 2;
-var RETWEET_INT_TIME = REQ_INT_TIME * 3;
+var POST_INT_TIME = REQ_INT_TIME * 3;
+var REPLY_INT_TIME = REQ_INT_TIME * 6;
+var RETWEET_INT_TIME = REQ_INT_TIME * 5;
 var REF_TRENDS_INT_TIME = REQ_INT_TIME * 15;
 
 var Twitter = new Twitter({
@@ -243,9 +244,13 @@ var reply = function(trend) {
 // Bots que interactuan con la API de Twitter
 var startTweetbot = function() {
 
-    reply('#Trump');
     generateTwits(function(twitts, trends) {
-
+        var trend;
+        if (trends.length > 0) {
+            var rand_trends_init = Math.floor(Math.random() * trends.length);
+            trend = trends[rand_trends_init];
+            console.log('Trend: ', trend);
+        }
         var postBotId = setInterval(function() {
             console.log("INIT postBot");
             if (twitts.length > 0) {
@@ -255,13 +260,14 @@ var startTweetbot = function() {
             }
         }, POST_INT_TIME);
 
+        var replyBotId = setInterval(function() {
+            console.log("INIT replyBot");
+            reply(trend);
+        }, REPLY_INT_TIME);
+
         var retweetBotId = setInterval(function() {
             console.log("INIT retweetBot");
-            if (trends.length > 0) {
-                var rand_trends_init = Math.floor(Math.random() * trends.length);
-                retweet(trends[rand_trends_init]);
-                console.log('Trend: ', trends[rand_trends_init]);
-            }
+            retweet(trend);
         }, RETWEET_INT_TIME);
 
         var trendsBotId = setInterval(function() {
@@ -272,7 +278,7 @@ var startTweetbot = function() {
             });
         }, REF_TRENDS_INT_TIME);
 
-        return [trendsBotId, postBotId, retweetBotId];
+        return [trendsBotId, replyBotId, postBotId, retweetBotId];
     });
 
 };
