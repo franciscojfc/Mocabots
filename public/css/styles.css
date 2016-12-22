@@ -1,0 +1,26 @@
+li {
+  position: relative;
+  float: left;
+  width: 100%;
+  list-style: none;
+}
+
+.botname {
+  position: relative;
+  float: left;
+  font-weight: bold;
+  width: 120px;
+}
+
+button {
+  position: relative;
+  float: left;
+}
+
+.botStatus {
+  position: relative;
+  float: left;
+  font-style: italic;
+  margin-left: 5px;
+  display: none;
+}
