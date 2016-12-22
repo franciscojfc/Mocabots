@@ -1,11 +1,8 @@
 var express = require('express');
-var app = express();
 var path = require('path');
-var http = require('http');
-var url = require("url");
-var request = require('request');
 var Twitter = require('twitter');
 var bots = require('./bots.js');
+var app = express();
 
 const PORT = 8080;
 
@@ -17,10 +14,12 @@ var botIds=[];
 // -------------------------------------------------------
 app.use(express.static('public'));
 
+
 // -------------------------------------------------------
 // Routing
 // -------------------------------------------------------
 
+// Raíz
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });

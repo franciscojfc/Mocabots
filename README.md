@@ -1,18 +1,25 @@
-"# Mocabots" 
+"# Mocabots"
 
-Instalar node https://nodejs.org/es/download/package-manager/
+// Entorno
+
+Instala node https://nodejs.org/es/download/package-manager/
 
 Actualiza npm npm install npm@latest -g
 
 Instala nodemon: npm install -g nodemon
 
-Instala Express: npm install express
-
-Instala twitter: npm install twitter
-
 Instala redwrap: npm install redwrap
 
-Entra en el directorio raíz del proyecto y ejecuta: nodemon server.js
+// Instalación del proyecto
+
+En el directorio raíz ejecuta: npm install
+
+
+// Ejecución
+
+En el directorio raíz del proyecto ejecuta: nodemon index.js
+
+En el navegador pon http://localhost:8080/
 
 Para arrancar bot twitero /bot/tweet/start
 

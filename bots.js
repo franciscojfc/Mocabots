@@ -9,6 +9,7 @@ var REPLY_INT_TIME = REQ_INT_TIME * 6;
 var RETWEET_INT_TIME = REQ_INT_TIME * 5;
 var REF_TRENDS_INT_TIME = REQ_INT_TIME * 15;
 
+
 var Twitter = new Twitter({
     consumer_key: constants.auth.CONSUMER_KEY,
     consumer_secret: constants.auth.CONSUMER_SECRET,
@@ -254,9 +255,10 @@ var reply = function(trend) {
 //// Bot functions
 ////////////////////////////////////////////////////////////////////////////////
 
+// Máxima longitud de un tweet
+var TWEET_MAX_LENGTH = 140;
 // Bots que interactuan con la API de Twitter
 var startTweetbot = function() {
-
     gen_tweets(function(twitts, trends) {
         var trend;
         if (trends.length > 0) {
@@ -302,24 +304,26 @@ var startTweetbot = function() {
 // -------------------------------------------------------
 var startRandombot = function() {
 
-	// Peticiones cíclicas
-	var message;
-	botId = setInterval(function() {
+    // Peticiones cíclicas
+    var message;
+    botId = setInterval(function() {
 
-		// Generamos mensaje
-		message = Math.round(Math.random()*1000);
+        // Generamos mensaje
+        message = Math.round(Math.random() * 1000);
 
-		Twitter.post('statuses/update', {status: message},  function(error, tweet, response) {
-		  if (error) {
-				console.log(error);
-			} else {
-				console.log(tweet);
-			}
-		});
+        Twitter.post('statuses/update', {
+            status: message
+        }, function(error, tweet, response) {
+            if (error) {
+                console.log(error);
+            } else {
+                console.log(tweet);
+            }
+        });
 
-	}, requestIntervalTime);
+    }, requestIntervalTime);
 
-  return botId;
+    return botId;
 };
 
 // -------------------------------------------------------
@@ -327,55 +331,58 @@ var startRandombot = function() {
 // -------------------------------------------------------
 var startReadbot = function() {
 
-  var p = new Promise(function(resolve, reject) {
+    var p = new Promise(function(resolve, reject) {
 
-    // Leemos las frases
-    fs.readFile('./texto.txt', 'utf8', function (err, data) {
-      var pos;
-      var phrases = [];
-      var message;
-      var text = data.replace(/\n/g, " ");
-      var allPhrases = text.split(".");
+        // Leemos las frases
+        fs.readFile('./texto.txt', 'utf8', function(err, data) {
+            var pos;
+            var phrases = [];
+            var message;
+            var text = data.replace(/\n/g, " ");
+            var allPhrases = text.split(".");
 
-      // Nos quedamos con las que tienen un tamaño apto para el twiteo
-      for (let phrase of allPhrases) {
-        if (phrase.length <= TWEET_MAX_LENGTH) {
-          phrases.push(phrase);
-        }
-      }
-
-      // Peticiones cíclicas
-      var botId = setInterval(function() {
-
-        // Seleccionamos una frase aleatoria
-        pos = Math.round(Math.random() * (phrases.length - 1));
-        if (phrases[pos].trim()) {
-          message = (phrases[pos]+".").trim().substr(0, 140);
-
-          Twitter.post('statuses/update', {status: message},  function(error, tweet, response) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log(tweet);
+            // Nos quedamos con las que tienen un tamaño apto para el twiteo
+            for (let phrase of allPhrases) {
+                if (phrase.length <= TWEET_MAX_LENGTH) {
+                    phrases.push(phrase);
+                }
             }
-          });
-        }
 
-      }, requestIntervalTime);
+            // Peticiones cíclicas
+            var botId = setInterval(function() {
 
-      resolve(botId);
+                // Seleccionamos una frase aleatoria
+                pos = Math.round(Math.random() * (phrases.length - 1));
+                if (phrases[pos].trim()) {
+                    message = (phrases[pos] + ".").trim().substr(0, 140);
+
+
+                    Twitter.post('statuses/update', {
+                        status: message
+                    }, function(error, tweet, response) {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log(tweet);
+                        }
+                    });
+                }
+
+            }, requestIntervalTime);
+
+            resolve(botId);
+        });
+
     });
 
-  });
-
-  return p;
+    return p;
 };
 
 // Parar
 var stopBot = function(botId) {
-  if (botId) {
-		clearInterval(botId);
-	}
+    if (botId) {
+        clearInterval(botId);
+    }
 };
 
 

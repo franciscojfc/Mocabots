@@ -7,11 +7,28 @@
   <title>Bot</title>
   <meta name="description" content="The HTML5 Herald">
   <meta name="author" content="SitePoint">
+
+  <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
-  MOCA Bots are ready...
+  <label>MOCA Bots are ready!</label>
 
-  <script src="app.js"></script>
+  <ul>
+    <li>
+      <label class="botname">Randombot</label>
+      <button type="button" name="button" class="startRandombot">START</button>
+      <button type="button" name="button" class="stopCurrentBot">STOP</button>
+      <label class="botStatus randombotStatus">ON</label>
+    </li>
+    <li>
+      <label class="botname">Readbot</label>
+      <button type="button" name="button" class="startReadbot">START</button>
+      <button type="button" name="button" class="stopCurrentBot">STOP</button>
+      <label class="botStatus readbotStatus">ON</label>
+    </li>
+  </ul>
+
+  <script src="js/app.js"></script>
 </body>
 </html>
