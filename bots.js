@@ -2,7 +2,7 @@ var Twitter = require('twitter');
 var fs = require('fs');
 var constants = require('./constants.js');
 
-// NO TOCAR. Puedes bloquear la cuenta. Max: 1 petición por minuto
+// NO TOCAR. Puedes bloquear la cuenta. Max: 1 petición por minuto.
 var requestIntervalTime = 60000;
 
 // Máxima longitud de un tweet
