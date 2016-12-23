@@ -16,6 +16,22 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		});
 	};
 
+	// Invoca al replybot
+	document.querySelector(".startReplybot").onclick = function() {
+		stopCurrentBot();
+		httpGetAsync("/bot/reply/start", function() {
+			document.querySelector(".replybotStatus").style.display = 'block';
+		});
+	};
+
+	// Invoca al retweetbot
+	document.querySelector(".startRetweetbot").onclick = function() {
+		stopCurrentBot();
+		httpGetAsync("/bot/retweet/start", function() {
+			document.querySelector(".retweetbotStatus").style.display = 'block';
+		});
+	};
+
   // Botones para parar los bots
 	var stopButtons = document.getElementsByClassName("stopCurrentBot");
 	for (let button of stopButtons) {
@@ -47,5 +63,7 @@ var stopCurrentBot = function() {
 	httpGetAsync("/bot/stop", function() {
 		document.querySelector(".randombotStatus").style.display = 'none';
 		document.querySelector(".readbotStatus").style.display = 'none';
+		document.querySelector(".replybotStatus").style.display = 'none';
+		document.querySelector(".retweetbotStatus").style.display = 'none';
 	});
 };

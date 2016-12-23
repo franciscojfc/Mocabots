@@ -7,12 +7,13 @@ var app = express();
 const PORT = 8080;
 
 // Id del bot en curso
-var currentBotId;
+var activeBotId;
 
 // -------------------------------------------------------
 // Estáticos
 // -------------------------------------------------------
 app.use(express.static('public'));
+
 
 // -------------------------------------------------------
 // Routing
@@ -23,9 +24,10 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+
 // Arrancar randombot
 app.get('/bot/random/start', function(req, res) {
-  currentBotId = bots.startRandombot();
+  activeBotId = bots.startRandombot();
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
@@ -33,17 +35,30 @@ app.get('/bot/random/start', function(req, res) {
 app.get('/bot/read/start', function(req, res) {
 
   bots.startReadbot().then(function(value) {
-    currentBotId = value;
+    activeBotId = value;
   });
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-app.get('/bot/stop', function(req, res) {
-  bots.stopBot(currentBotId);
-	currentBotId = null;
+// Arrancar smartbot
+app.get('/bot/reply/start', function(req, res) {
+  activeBotId = bots.startReplybot();
+
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+// Arrancar smartbot
+app.get('/bot/retweet/start', function(req, res) {
+	activeBotId = bots.startRetweetbot();
+
+  res.sendFile(path.join(__dirname + '/index.html'));
+});
+
+app.get('/bot/stop', function(req, res) {
+  bots.stopBot(activeBotId);
+	activeBotId = null;
+  res.sendFile(path.join(__dirname + '/index.html'));
+});
 
 // -------------------------------------------------------
 // Arranco el servidor
