@@ -7,7 +7,7 @@ var app = express();
 const PORT = 8080;
 
 // Id del bot en curso
-var botIds=[];
+var activeBotId;
 
 // -------------------------------------------------------
 // Estáticos
@@ -24,15 +24,10 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-app.get('/bot/tweet/start', function(req, res) {
-	botIds.push(bots.startTweetbot());
-
-  res.sendFile(path.join(__dirname + '/index.html'));
-});
 
 // Arrancar randombot
 app.get('/bot/random/start', function(req, res) {
-  botIds.push(bots.startRandombot());
+  activeBotId = bots.startRandombot();
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
@@ -40,16 +35,28 @@ app.get('/bot/random/start', function(req, res) {
 app.get('/bot/read/start', function(req, res) {
 
   bots.startReadbot().then(function(value) {
-    botIds.push(value);
+    activeBotId = value;
   });
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
+// Arrancar smartbot
+app.get('/bot/reply/start', function(req, res) {
+  activeBotId = bots.startReplybot();
+
+  res.sendFile(path.join(__dirname + '/index.html'));
+});
+
+// Arrancar smartbot
+app.get('/bot/retweet/start', function(req, res) {
+	activeBotId = bots.startRetweetbot();
+
+  res.sendFile(path.join(__dirname + '/index.html'));
+});
+
 app.get('/bot/stop', function(req, res) {
-  for (var i = 0; i < botIds.length; i++) {
-    bots.stopBot(botIds[i]);
-  }
-	botIds = [];
+  bots.stopBot(activeBotId);
+	activeBotId = null;
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 

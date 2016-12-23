@@ -2,6 +2,9 @@ var Twitter = require('twit');
 var constants = require('./constants.js');
 var fs = require("fs");
 
+// Máxima longitud de un tweet
+var TWEET_MAX_LENGTH = 140;
+
 // NO TOCAR. Puedes bloquear la cuenta. Max: 1 petición por minuto
 var REQ_INT_TIME = 60000; // Request interval time
 var POST_INT_TIME = REQ_INT_TIME * 3;
@@ -255,10 +258,37 @@ var reply = function(trend) {
 //// Bot functions
 ////////////////////////////////////////////////////////////////////////////////
 
-// Máxima longitud de un tweet
-var TWEET_MAX_LENGTH = 140;
+// -------------------------------------------------------
+// Replybot: responde tweets con tendencias con mensajes
+// cogidos de un fichero
+// -------------------------------------------------------
+var startReplyBot = function(){
+  get_trends(function(trends) {
+    return setInterval(function() {
+      console.log("INIT replyBot");
+      var rand_trend = gen_rand_num(trends.length);
+      reply(trends[rand_trend]);
+    }, REPLY_INT_TIME);
+  });
+
+};
+
+// -------------------------------------------------------
+// Retweetbot: retweetea tweets con tendencias
+// -------------------------------------------------------
+var startRetweetBot = function() {
+  get_trends(function(trends) {
+    return setInterval(function() {
+        console.log("INIT retweetBot");
+        var rand_trend = gen_rand_num(trends.length);
+        retweet(trends[rand_trend]);
+    }, RETWEET_INT_TIME);
+  });
+};
+
+
 // Bots que interactuan con la API de Twitter
-var startTweetbot = function() {
+var startSmartbot = function() {
     gen_tweets(function(twitts, trends) {
         var trend;
         if (trends.length > 0) {
@@ -275,15 +305,9 @@ var startTweetbot = function() {
             }
         }, POST_INT_TIME);
 
-        var replyBotId = setInterval(function() {
-            console.log("INIT replyBot");
-            reply(trend);
-        }, REPLY_INT_TIME);
+        var replyBotId = startReplyBot();
 
-        var retweetBotId = setInterval(function() {
-            console.log("INIT retweetBot");
-            retweet(trend);
-        }, RETWEET_INT_TIME);
+        var retweetBotId = startRetweetBot();
 
         var trendsBotId = setInterval(function() {
             console.log("INIT generateBot");
@@ -321,7 +345,7 @@ var startRandombot = function() {
             }
         });
 
-    }, requestIntervalTime);
+    }, REQ_INT_TIME);
 
     return botId;
 };
@@ -368,7 +392,7 @@ var startReadbot = function() {
                     });
                 }
 
-            }, requestIntervalTime);
+            }, REQ_INT_TIME);
 
             resolve(botId);
         });
@@ -387,8 +411,9 @@ var stopBot = function(botId) {
 
 
 // Se exportan las funciones de los bots
-exports.startTweetbot = startTweetbot;
-exports.stopBots = stopBots;
+exports.startSmartbot = startSmartbot;
+exports.startReplyBot = startReplyBot;
+exports.startRetweetBot = startRetweetBot;
 exports.startRandombot = startRandombot;
 exports.startReadbot = startReadbot;
 exports.stopBot = stopBot;
