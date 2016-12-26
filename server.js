@@ -64,5 +64,5 @@ app.get('/bot/stop', function(req, res) {
 // Arranco el servidor
 // -------------------------------------------------------
 
-app.listen(PORT);
+app.listen(process.env.PORT || PORT);
 console.log("Servidor arrancado en puerto " + PORT);
