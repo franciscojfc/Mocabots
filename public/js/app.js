@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
   // Invoca al readbot
 	document.querySelector(".startReadbot").onclick = function() {
 		stopCurrentBot();
-    httpGetAsync("/bot/read/start", function() {
+   		httpGetAsync("/bot/read/start", function() {
 			document.querySelector(".readbotStatus").style.display = 'block';
 		});
 	};
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		});
 	};
 
-  // Botones para parar los bots
+  	// Botones para parar los bots
 	var stopButtons = document.getElementsByClassName("stopCurrentBot");
 	for (let button of stopButtons) {
 		button.onclick = stopCurrentBot;
