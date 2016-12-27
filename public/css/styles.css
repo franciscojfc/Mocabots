@@ -9,18 +9,23 @@ li {
   position: relative;
   float: left;
   font-weight: bold;
-  width: 120px;
+  width: 40%;
 }
 
 button {
   position: relative;
   float: left;
+  width: 25%;
 }
 
 .botStatus {
   position: relative;
   float: left;
   font-style: italic;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
   margin-left: 5px;
-  display: none;
+  margin-top: 4px;
+  background-color: red;
 }

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	document.querySelector(".startRandombot").onclick = function() {
 		stopCurrentBot();
 		httpGetAsync("/bot/random/start", function() {
-			document.querySelector(".randombotStatus").style.display = 'block';
+			document.querySelector(".randombotStatus").style.backgroundColor = 'green';
 		});
 	};
 
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	document.querySelector(".startReadbot").onclick = function() {
 		stopCurrentBot();
    		httpGetAsync("/bot/read/start", function() {
-			document.querySelector(".readbotStatus").style.display = 'block';
+			document.querySelector(".readbotStatus").style.backgroundColor = 'green';
 		});
 	};
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	document.querySelector(".startReplybot").onclick = function() {
 		stopCurrentBot();
 		httpGetAsync("/bot/reply/start", function() {
-			document.querySelector(".replybotStatus").style.display = 'block';
+			document.querySelector(".replybotStatus").style.backgroundColor = 'green';
 		});
 	};
 
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 	document.querySelector(".startRetweetbot").onclick = function() {
 		stopCurrentBot();
 		httpGetAsync("/bot/retweet/start", function() {
-			document.querySelector(".retweetbotStatus").style.display = 'block';
+			document.querySelector(".retweetbotStatus").style.backgroundColor = 'green';
 		});
 	};
 
@@ -61,9 +61,9 @@ var httpGetAsync = function(theUrl, callback)
 // Para el bot que esté en curso
 var stopCurrentBot = function() {
 	httpGetAsync("/bot/stop", function() {
-		document.querySelector(".randombotStatus").style.display = 'none';
-		document.querySelector(".readbotStatus").style.display = 'none';
-		document.querySelector(".replybotStatus").style.display = 'none';
-		document.querySelector(".retweetbotStatus").style.display = 'none';
+		document.querySelector(".randombotStatus").style.backgroundColor = 'red';
+		document.querySelector(".readbotStatus").style.backgroundColor = 'red';
+		document.querySelector(".replybotStatus").style.backgroundColor = 'red';
+		document.querySelector(".retweetbotStatus").style.backgroundColor = 'red';
 	});
 };
